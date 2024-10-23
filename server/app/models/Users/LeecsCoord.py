@@ -10,7 +10,7 @@ class CoordLeccs(Teacher, db.Model):
     
     __tablename__ = "coordleecs"
 
-    _id: Mapped[int] = mapped_column("id", Integer, primary_key=True, autoincrement=True, )
+    _id: Mapped[int] = mapped_column("id", Integer, primary_key=True, autoincrement=True)
     _teacher_id: Mapped[str] = mapped_column(ForeignKey("teachers.id"))
     
     _teacher_assoc: Mapped["Teacher"] = relationship(back_populates="_coord_assoc")
