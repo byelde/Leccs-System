@@ -1,27 +1,33 @@
-from datetime import datetime
+from datetime import datetime as dtt
+from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, Integer, DateTime, Boolean
+
+from app.database import db
 
 
-class Activity:
+class Activity(db.Model):
+
     ___tablename__ = "activities"
 
-    _id: int
-    _responsible_id: str
-    _category: str
-    _init_date: datetime
-    _end_date: datetime
-    _lecc_id: int
-    _description: str
-    _state: bool # different between normal users and coordleccs
+    _id:             Mapped[int] = mapped_column("id", Integer, primary_key=True, unique=True, autoincrement=True)
+    _responsible_id: Mapped[str] = mapped_column("responsible_id", String, nullable=False)
+    _category:       Mapped[str] = mapped_column("category", Integer, nullable=False)
+    _init_date:      Mapped[str] = mapped_column("init_date", DateTime, nullable=False)
+    _end_date:       Mapped[str] = mapped_column("end_date", DateTime, nullable=False)
+    _lecc_id:        Mapped[int] = mapped_column("lecc_id", Integer, nullable=False)
+    _description:    Mapped[str] = mapped_column("description", DateTime, nullable=True)
+    _state:          Mapped[bool] = mapped_column("state", Boolean, nullable=False)
+    # ^- state: different between normal users and coordleccs
 
 
     def __init__(self,
                  id: str,
                  responsible_id: str,
                  category: str,
-                 init_date: datetime,
-                 end_date: datetime,
+                 init_date: dtt,
+                 end_date: dtt,
                  lecc_id: int,
-                 _description: int) -> None:
+                 description: int) -> None:
         
         self._id = id
         self._responsible_id = responsible_id
@@ -29,7 +35,7 @@ class Activity:
         self._init_date = init_date
         self._end_date = end_date
         self._lecc_id = lecc_id
-        self._description = _description
+        self._description = description
 
 
     def updateData(self, category:str = None, 

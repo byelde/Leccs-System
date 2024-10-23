@@ -1,10 +1,17 @@
-class Requisition():
+from datetime import datetime as dtt
+from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, Integer, DateTime, Boolean
+
+from app.database import db
+
+
+class Requisition(db.Model):
 
     __tablename__ = "requisitions"
 
-    _id: int
-    _activity_id: int
-    _subscriber_id: str
+    _id:            Mapped[int] = mapped_column("id", Integer, nullable=False, autoincrement=True, primary_key=True)
+    _activity_id:   Mapped[int] = mapped_column("activity_id", Integer, nullable=False)
+    _subscriber_id: Mapped[str] = mapped_column("subscriber_id", String, nullable=False)
 
 
     def __init__(self, id_activity, id_subscriber):
