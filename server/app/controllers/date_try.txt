@@ -1,0 +1,14 @@
+# init_date:      dtt|None = datetime.fromisoformat(args.get("init_date")) if args.get("init_date") else None
+
+
+"""conditions = []
+if id is not None:
+    conditions.append(Activity._id == id)
+if category is not None:
+    conditions.append(Activity._category == category)
+if init_date is not None:
+    conditions.append(Activity._init_date.date == init_date)
+if lecc_id is not None:
+    conditions.append(Activity._lecc_id == lecc_id)
+
+act_obj_list = Activity.query.filter(*conditions).all()"""
