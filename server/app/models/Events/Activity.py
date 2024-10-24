@@ -15,27 +15,26 @@ class Activity(db.Model):
     _init_date:      Mapped[str] = mapped_column("init_date", DateTime, nullable=False)
     _end_date:       Mapped[str] = mapped_column("end_date", DateTime, nullable=False)
     _lecc_id:        Mapped[int] = mapped_column("lecc_id", Integer, nullable=False)
-    _description:    Mapped[str] = mapped_column("description", DateTime, nullable=True)
+    _description:    Mapped[str] = mapped_column("description", String, nullable=True)
     _state:          Mapped[bool] = mapped_column("state", Boolean, nullable=False)
     # ^- state: different between normal users and coordleccs
 
 
     def __init__(self,
-                 id: str,
                  responsible_id: str,
                  category: str,
-                 init_date: dtt,
-                 end_date: dtt,
+                 init_date: DateTime,
+                 end_date: DateTime,
                  lecc_id: int,
-                 description: int) -> None:
+                 description: int|None = None) -> None:
         
-        self._id = id
         self._responsible_id = responsible_id
         self._category = category
         self._init_date = init_date
         self._end_date = end_date
         self._lecc_id = lecc_id
         self._description = description
+        self._state = False
 
 
     def updateData(self, category:str = None, 
@@ -64,10 +63,10 @@ class Activity(db.Model):
 
         
     def __updateInitDate(self, new_init_date:str) -> None:
-        self._init_date = new_init_date
+        self._init_date = dtt.fromisoformat(new_init_date)
     
     def __updateEndDate(self, new_end_date:str) -> None:
-        self._end_date = new_end_date
+        self._end_date = dtt.fromisoformat(new_end_date)
 
 
     def __updateLeccId(self, new_lecc_id:int) -> None:
@@ -89,3 +88,15 @@ class Activity(db.Model):
             "description": self._description,
             "state": self._state,
         }
+    
+
+    def data(self):
+        print(
+            "responsible_id" , " - ", type(self._responsible_id), ":", self._responsible_id, "\n",
+            "category" , " - ", type(self._category), ":", self._category, "\n",
+            "init_date" , " - ", type(self._init_date), ":", self._init_date, "\n",
+            "end_date" , " - ", type(self._end_date), ":", self._end_date, "\n",
+            "lecc_id" , " - ", type(self._lecc_id), ":", self._lecc_id, "\n",
+            "description" , " - ", type(self._description), ":", self._description, "\n",
+            "state" , " - ", type(self._state), ":", self._state, "\n",
+        )
