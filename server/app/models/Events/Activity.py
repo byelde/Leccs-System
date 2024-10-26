@@ -37,6 +37,16 @@ class Activity(db.Model):
         self._state = False
 
 
+    def getId(self) -> int:
+        return self._id
+
+
+    def sendActivity(self) -> None:
+        db.session.add(self)
+        db.session.commit()
+        db.session.flush()
+
+
     def updateData(self, category:str = None, 
                          init_date:str = None,
                          end_date:str = None,
@@ -65,6 +75,7 @@ class Activity(db.Model):
     def __updateInitDate(self, new_init_date:str) -> None:
         self._init_date = dtt.fromisoformat(new_init_date)
     
+
     def __updateEndDate(self, new_end_date:str) -> None:
         self._end_date = dtt.fromisoformat(new_end_date)
 
@@ -90,13 +101,4 @@ class Activity(db.Model):
         }
     
 
-    def data(self):
-        print(
-            "responsible_id" , " - ", type(self._responsible_id), ":", self._responsible_id, "\n",
-            "category" , " - ", type(self._category), ":", self._category, "\n",
-            "init_date" , " - ", type(self._init_date), ":", self._init_date, "\n",
-            "end_date" , " - ", type(self._end_date), ":", self._end_date, "\n",
-            "lecc_id" , " - ", type(self._lecc_id), ":", self._lecc_id, "\n",
-            "description" , " - ", type(self._description), ":", self._description, "\n",
-            "state" , " - ", type(self._state), ":", self._state, "\n",
-        )
+    

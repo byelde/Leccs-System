@@ -3,7 +3,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import String as String
 
 from app.database import db
-from .User import User
+from .IUser import User
 
 class Student(User, db.Model):
     
@@ -32,9 +32,9 @@ class Student(User, db.Model):
         pass
 
 
-    @override
-    def getId(self) -> str:
-        return self._id
+    # @override
+    # def getId(self) -> str:
+    #     return self._id
     
 
     @override

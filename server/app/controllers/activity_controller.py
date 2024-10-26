@@ -1,13 +1,14 @@
 from flask import jsonify, request
-import json
 from sqlalchemy import DateTime as dtt
 from datetime import datetime
 
-# from app.app import app
 from app.database import db
 
 from app.models.Events.Activity import Activity
+from app.models.Events.Requisition import Requisition
+
 class ActivityController:
+    
     def create(self):
 
         data = request.json
@@ -19,43 +20,37 @@ class ActivityController:
         lecc_id:        int = data.get("lecc_id")
         description:    str = data.get("description")
 
+
         if not (responsible_id and category and lecc_id and init_date and end_date):
-            return(
-                jsonify({
-                    "message":"data is missing."
-                }),
-                400
-            )
+            return( jsonify({"message":"data is missing."}), 400 )
         
 
-        act_obj = Activity(
-            responsible_id = responsible_id,
-            category = category,
-            init_date = datetime.fromisoformat(init_date),
-            end_date = datetime.fromisoformat(end_date),
-            lecc_id = lecc_id,
-            description = description
-        )
-
         try:
-            db.session.add(act_obj)
-            db.session.commit()
+            act_obj: type[Activity] = Activity(
+                responsible_id = responsible_id,
+                category = category,
+                init_date = datetime.fromisoformat(init_date),
+                end_date = datetime.fromisoformat(end_date),
+                lecc_id = lecc_id,
+                description = description
+            )
+            act_obj.sendActivity()
 
         except Exception as e:
-            return (
-                jsonify({
-                    "message":str(e)
-                }),
-                400
-            )
+            return ( jsonify({"message":str(e)}), 400 )
 
 
-        return (
-            jsonify({
-                "message":"activity created successfully."
-            }),
-            200
-        )
+        try:
+            req_obj: type[Requisition] = Requisition(act_obj.getId())
+            req_obj.sendRequisition()
+
+        except Exception as e:
+            self.delete(act_obj.getId())
+            return ( jsonify({"message":str(e)}), 400 )
+
+
+
+        return ( jsonify({"message":"request send successfully."}), 200 )
     
     
     def show(self, id):
@@ -87,7 +82,6 @@ class ActivityController:
             200
         )
     
-
 
     def showAll(self, query):
 
@@ -169,7 +163,6 @@ class ActivityController:
         )
 
              
-    
     def delete(self, id):
 
         try:
@@ -184,8 +177,10 @@ class ActivityController:
         
 
         try:
+            Requisition.query.filter_by(_activity_id = id).delete()
             Activity.query.filter_by(_id = id).delete()
             db.session.commit()
+            db.session.flush()
 
         except Exception as e:
             return (
