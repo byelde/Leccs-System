@@ -3,19 +3,19 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String as String
 
 from app.database import db
-from .User import User
+from .IUser import User
 
 class Teacher(db.Model, User):
     
     __tablename__ = "teachers"
+    __mapper_args__ = {"polymorphic_identity": "teachers", "polymorphic_on": "_type"}
 
     _id:        Mapped[str] = mapped_column("id", String, primary_key=True)
     _name:      Mapped[str] = mapped_column("name", String)
     _email:     Mapped[str] = mapped_column("email", String, unique=True)
     _password:  Mapped[str] = mapped_column("password", String)
+    _type:      Mapped[str] = mapped_column("type", String)
     
-    _coord_assoc: Mapped["CoordLeccs"] = relationship(back_populates="_teacher_assoc")
-
 
     def __init__(self, id: str, name: str, email: str, password: str) -> None:
         self._id        = id 
@@ -34,9 +34,9 @@ class Teacher(db.Model, User):
         pass
 
 
-    @override
-    def getId(self) -> str:
-        return self._id
+    # @override
+    # def getId(self) -> str:
+    #     return self._id
     
 
     @override

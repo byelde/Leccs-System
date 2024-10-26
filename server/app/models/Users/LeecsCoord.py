@@ -1,6 +1,6 @@
 from typing import override
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, Integer
+from sqlalchemy import ForeignKey, Integer, Boolean
 
 from app.database import db
 from .Teacher import Teacher
@@ -9,16 +9,14 @@ from .Teacher import Teacher
 class CoordLeccs(Teacher, db.Model):
     
     __tablename__ = "coordleecs"
+    __mapper_args__ = {'polymorphic_identity': 'coordleccs'}
 
-    _id: Mapped[int] = mapped_column("id", Integer, primary_key=True, autoincrement=True)
-    _teacher_id: Mapped[str] = mapped_column(ForeignKey("teachers.id"))
+    _teacher_id:           Mapped[str] = mapped_column("id",ForeignKey("teachers.id"), primary_key=True)
+    _pending_requisitions: Mapped[bool] = mapped_column("pending_req", Boolean, nullable=True)
     
-    _teacher_assoc: Mapped["Teacher"] = relationship(back_populates="_coord_assoc")
 
-
-    def __init__(self, id, name, email, password):
-        super().__init__(id, name, email, password)
-        self._teacher_id = id
+    def __init__(self, teacher: type[Teacher]):
+        super().__init__(*list(teacher.to_json().values()))
 
 
     @override
