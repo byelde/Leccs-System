@@ -14,11 +14,6 @@ class User():
 
 
     @abstractmethod
-    def getId(self) -> None:
-        pass
-    
-
-    @abstractmethod
     def getName(self) -> None:
         pass
     
