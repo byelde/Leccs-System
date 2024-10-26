@@ -30,5 +30,23 @@ class CoordLeccs(Teacher, db.Model):
         pass
 
 
-    def update():
-        pass
+    def newRequisition(self, state):
+        if not self._pending_requisitions:
+            self._pending_requisitions = True
+        db.session.commit()
+
+
+    def getId(self) -> str:
+        return self._teacher_id
+
+    
+    @override
+    def to_json(self) -> dict:
+        return {
+            "id":           self._id,
+            "teacher_id":   self._teacher_id,
+            "name":         self._name,
+            "email":        self._email,
+            "password":     self._password,
+            "pending_req":  self._pending_requisitions
+        }
