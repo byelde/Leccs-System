@@ -32,9 +32,9 @@ class Student(User, db.Model):
         pass
 
 
-    # @override
-    # def getId(self) -> str:
-    #     return self._id
+    @override
+    def validatePwd(self, pwd:str) -> bool:
+        return pwd == self._password
     
 
     @override
