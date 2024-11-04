@@ -10,9 +10,6 @@ export const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [passwordVisibility, setPasswordVisibility] = useState<boolean>(false);
-  
-
-  console.log(passwordVisibility)
 
   
   const handleEnter = useCallback(() => {
@@ -26,8 +23,10 @@ export const Login = () => {
 
 
   const typePasswordLabel: string = useMemo(()=>{
-    if (passwordVisibility){return "password"} else {return "text"} 
+    if (passwordVisibility){return "text"} else {return "password"} 
   },[passwordVisibility])
+
+
 
   return(
     <Container maxWidth={false} sx={{display:"flex", justifyContent:"center", alignItems:"center", flexDirection:"column", maxWidth:"100%"}}>
