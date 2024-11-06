@@ -14,6 +14,8 @@ export const Login = () => {
   
   const handleEnter = useCallback(() => {
     window.alert(`${email}, ${password}`)
+    setEmail("")
+    setPassword("")
   }, [email, password])
 
 
