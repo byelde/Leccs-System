@@ -10,6 +10,10 @@ export const Homepage = () => {
   const openForm = useCallback(()=>{
     setIsRequestFormOpen(true)
   },[])
+  
+  const sendRequest = useCallback(()=>{
+    window.alert("Request submitted.")
+  },[])
 
   return(
     <Container sx={{ display:"flex", flexDirection:"column", justifyItems:"left", padding:10}}>
@@ -18,7 +22,7 @@ export const Homepage = () => {
       <Box sx={{display:"flex", flexDirection:"column", justifyContent:"right", gap:4}}>
         <BookButton action={openForm}/>
         <DisplayCard/>
-        <RequisitionForm isOpen={isRequestFormOpen} setIsOpen={setIsRequestFormOpen}/>
+        <RequisitionForm isOpen={isRequestFormOpen} setIsOpen={setIsRequestFormOpen} action={sendRequest}/>
       </Box>
     </Container>
   )

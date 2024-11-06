@@ -10,6 +10,7 @@ import 'dayjs/locale/en-gb';
 interface IRequestFormProps{
   isOpen: boolean
   setIsOpen: (arg:boolean)=>void
+  action: ()=>void
 }
 
 export const RequisitionForm: React.FC<IRequestFormProps> = (props) => {
@@ -65,7 +66,7 @@ export const RequisitionForm: React.FC<IRequestFormProps> = (props) => {
 
         <DialogActions>
           <Button onClick={()=>{props.setIsOpen(false)}}>Cancel</Button>
-          <Button>Request</Button>
+          <Button onClick={()=>{props.setIsOpen(false); props.action()}}>Request</Button>
         </DialogActions>
 
       </Dialog>
