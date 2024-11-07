@@ -53,7 +53,7 @@ class ActivityController:
         return ( jsonify({"message":"request send successfully."}), 200 )
     
     
-    def show(self, id):
+    """*def show(self, id):
 
         act_id = request.json.get("id")
 
@@ -80,24 +80,31 @@ class ActivityController:
         return jsonify(
             act_obj.to_json(),
             200
-        )
+        )"""
     
 
     def showAll(self, query):
 
         args = request.args
 
+        id:         int = int(args.get("id")) if args.get("id") else 0
+        resp_id:    int = args.get("responsible_id") if args.get("responsible_id") else ""
+        category:   str = args.get("category") if args.get("category") else ""
+        lecc_id:    int = int(args.get("lecc_id")) if args.get("lecc_id") else 0
+        max_date:   datetime = datetime.fromisoformat(args.get("max_date")) if args.get("max_date") else datetime.max
+        min_date:   datetime = datetime.fromisoformat(args.get("min_date")) if args.get("min_date") else datetime.min
+        state:      bool = args.get("state") if args.get("state") else True
 
-        id:             int|None = int(args.get("id")) if args.get("id") else None
-        category:       str|None = args.get("category")
-        lecc_id:        int|None = int(args.get("lecc_id")) if args.get("lecc_id") else None
+        print(id,category,lecc_id,max_date,min_date)
 
-
-        filter_data = {"_id": id, "_category": category, "_lecc_id": lecc_id}
-        filter_data = {key: value for (key, value) in filter_data.items() if value}
-
-        act_obj_list: list[Activity]= Activity.query.filter_by(**filter_data).all()
-
+        act_obj_list: list[Activity] = db.session.query(Activity).filter(
+            ((Activity._id == id) if (id) else (Activity._id != id)),
+            ((Activity._responsible_id == resp_id) if (resp_id) else (Activity._responsible_id != resp_id)),
+            ((Activity._category == category) if (category) else (Activity._category != category)),
+            ((Activity._lecc_id == lecc_id) if (lecc_id) else (Activity._lecc_id != lecc_id)),
+            Activity._init_date.between(min_date, max_date),
+            ((Activity._state == state) if (state) else (True))
+        ).all()
 
         return (jsonify([
             obj.to_json() for obj in act_obj_list
