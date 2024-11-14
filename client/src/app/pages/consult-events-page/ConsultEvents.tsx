@@ -14,14 +14,14 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 export const ConsultEventsPage = () => {
 
-  const DEFAULT_DATE:Dayjs = useMemo(()=>{
-    return dayjs()
-  },[])
   const [date, setDate] = useState<Dayjs>(dayjs())
   const [lecc, setLecc] = useState<string>("Lecc 1")
   const returnWeekButton = useRef<HTMLButtonElement>(null)
   const forwardWeekButton = useRef<HTMLButtonElement>(null)
-
+  
+  const DEFAULT_DATE:Dayjs = useMemo(()=>{
+    return dayjs()
+  },[])
 
   const handleReturnWeek = useCallback(()=>{
     if (date.subtract(1,"week").isAfter(DEFAULT_DATE)) setDate(date.subtract(1,"week"));
