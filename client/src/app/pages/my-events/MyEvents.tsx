@@ -1,10 +1,39 @@
 import { Avatar, Box, Button, Container, Drawer, Grid2 as Grid, IconButton, List, ListItem, ListItemText, Paper, TextField, Typography} from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useCallback, useRef, useState } from "react";
+import { ActivityPopUp } from "../../shared/components";
 
 
 export const MyEvents = () => {
+
+  const dialogRef = useRef<HTMLInputElement>(null)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [currActivityData, setCurrActivityData] = useState<ICurrActivityData>({} as ICurrActivityData)
+
+  interface ICurrActivityData {
+    name: string;
+    responsible_id: string;
+    category: string;
+    init_date: string;
+  }
+
+  const handleModalData = useCallback((name: string, responsible_id: string, category: string, init_date: string)=>{
+    setCurrActivityData({name: name, responsible_id: responsible_id, category: category, init_date: init_date})
+    setIsDialogOpen(true);
+  },[])
+  
   return(
     <Container sx={{display:"flex", justifyContent:"center", alignContent:"center"}}>
+
+      <ActivityPopUp
+        ref={dialogRef}
+        name={currActivityData.name}
+        responsible_id={currActivityData.responsible_id}
+        category={currActivityData.category}
+        init_date={currActivityData.init_date}
+        isOpen={isDialogOpen}
+        setIsOpen={setIsDialogOpen}
+      />
 
       <Drawer variant="permanent" anchor="left">
         <Box sx={{display:"flex", padding:4, height:"100%", minWidth:200, justifyContent:"center", alignItems:"start"}}>
@@ -54,6 +83,12 @@ export const MyEvents = () => {
                   >
                     <ListItemText
                       primary={`item ${arg}`}
+                      onClick={()=>{handleModalData(
+                        String(arg),
+                        String(arg),
+                        String(arg),
+                        String(arg)
+                      )}}
                     />
                     <Box sx={{display:"flex", gap:2}}>
                       <Typography>yy/mm/ss</Typography>
