@@ -1,6 +1,6 @@
 from datetime import datetime as dtt
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, Integer, DateTime, Boolean
+from sqlalchemy import String, Integer, DateTime, Boolean, UniqueConstraint
 
 from app.database import db
 
@@ -17,6 +17,9 @@ class Activity(db.Model):
     _lecc_id:        Mapped[int] = mapped_column("lecc_id", Integer, nullable=False)
     _description:    Mapped[str] = mapped_column("description", String, nullable=True)
     _state:          Mapped[bool] = mapped_column("state", Boolean, nullable=False)
+
+    __table_args__ = (UniqueConstraint('lecc_id', 'init_date', "end_date"),)
+
     # ^- state: different between normal users and coordleccs
 
 
@@ -93,8 +96,8 @@ class Activity(db.Model):
             "id": self._id,
             "responsible_id": self._responsible_id,
             "category": self._category,
-            "init_date": self._init_date,
-            "end_date": self._end_date,
+            "init_date": str(self._init_date),
+            "end_date": str(self._end_date),
             "lecc_id": self._lecc_id,
             "description": self._description,
             "state": self._state,
