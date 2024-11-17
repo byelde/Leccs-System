@@ -10,8 +10,8 @@ export const Homepage = () => {
   const loggedUserContext = useContext(LoggedUserDataContext)
 
   useEffect(()=>{
-    console.log(loggedUserContext.name)
-  })
+    if(!loggedUserContext.id) navigate("/login")
+})
 
   const navigate = useNavigate();
 

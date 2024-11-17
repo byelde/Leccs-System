@@ -1,23 +1,20 @@
 import { AppBar, Box, Button, Checkbox, Container, FormControlLabel, IconButton, InputAdornment, Paper, TextField, Toolbar, Typography } from "@mui/material"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useContext, useMemo, useState } from "react"
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { LoggedUserDataContext } from "../../shared/contexts";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
 
+  const loggedUserContext = useContext(LoggedUserDataContext)
   
-  const [email, setEmail] = useState<string>("");
+  const [id, setId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [passwordVisibility, setPasswordVisibility] = useState<boolean>(false);
 
-  
-  const handleEnter = useCallback(() => {
-    window.alert(`${email}, ${password}`)
-    setEmail("")
-    setPassword("")
-  }, [email, password])
-
+  const navigate = useNavigate();
 
   const handleChangePasswordType = useCallback(()=>{
     setPasswordVisibility(!passwordVisibility)
@@ -25,9 +22,16 @@ export const Login = () => {
 
 
   const typePasswordLabel: string = useMemo(()=>{
-    if (passwordVisibility){return "text"} else {return "password"} 
+    if (passwordVisibility){return "text"} else {return "password"}
   },[passwordVisibility])
 
+  const handleExecuteLogin = useCallback((id:string, pwd: string)=>{
+    loggedUserContext.signin(id, pwd)
+    if (loggedUserContext.id){
+      console.log("GOOOO")
+      navigate("/")
+    };
+  },[])
 
 
   return(
@@ -58,18 +62,18 @@ export const Login = () => {
         <Box component={"form"}>
 
           <TextField
-              name="inputEmail"
+              name="inputid"
               required
               fullWidth
               autoFocus 
-              label={"Email"} 
+              label={"id"} 
               sx={{mb:2}} 
               slotProps={{
                   input:{style: {fontSize:28}}, 
                   inputLabel:{style:{fontSize:24}}
               }}
-              value={email}
-              onChange={(e)=>setEmail(e.target.value)}
+              value={id}
+              onChange={(e)=>setId(e.target.value)}
           />
 
           <TextField
@@ -103,7 +107,7 @@ export const Login = () => {
               slotProps={{typography:{style:{fontSize:24}}}}
           />
 
-          <Button fullWidth variant="contained" sx={{fontSize:24}} onClick={handleEnter}>Login</Button>
+          <Button fullWidth variant="contained" sx={{fontSize:24}} onClick={()=>{handleExecuteLogin(id, password)}}>Login</Button>
 
         </Box>
 
