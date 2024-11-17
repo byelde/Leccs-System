@@ -1,3 +1,4 @@
+OLDER THAN 7/11
 # init_date:      dtt|None = datetime.fromisoformat(args.get("init_date")) if args.get("init_date") else None
 
 
@@ -12,3 +13,10 @@ if lecc_id is not None:
     conditions.append(Activity._lecc_id == lecc_id)
 
 act_obj_list = Activity.query.filter(*conditions).all()"""
+
+=====================================================================================
+OLDER VERSION SUBSTITUTED 7/11 
+# filter_data = {"_id": id, "_category": category, "_lecc_id": lecc_id}
+        # filter_data = {key: value for (key, value) in filter_data.items() if value}
+
+        # act_obj_list: list[Activity]= Activity.query.filter_by(**filter_data).all()
