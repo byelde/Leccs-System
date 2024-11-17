@@ -53,7 +53,7 @@ class ActivityController:
         return ( jsonify({"message":"request send successfully."}), 200 )
     
     
-    """*def show(self, id):
+    def show(self, id):
 
         act_id = request.json.get("id")
 
@@ -80,7 +80,7 @@ class ActivityController:
         return jsonify(
             act_obj.to_json(),
             200
-        )"""
+        )
     
 
     def showAll(self, query):
@@ -93,7 +93,7 @@ class ActivityController:
         lecc_id:    int = int(args.get("lecc_id")) if args.get("lecc_id") else 0
         max_date:   datetime = datetime.fromisoformat(args.get("max_date")) if args.get("max_date") else datetime.max
         min_date:   datetime = datetime.fromisoformat(args.get("min_date")) if args.get("min_date") else datetime.min
-        state:      bool = args.get("state") if args.get("state") else True
+        state:      bool = args.get("state") if (args.get("state") != None) else None
 
         print(id,category,lecc_id,max_date,min_date)
 
@@ -103,7 +103,7 @@ class ActivityController:
             ((Activity._category == category) if (category) else (Activity._category != category)),
             ((Activity._lecc_id == lecc_id) if (lecc_id) else (Activity._lecc_id != lecc_id)),
             Activity._init_date.between(min_date, max_date),
-            ((Activity._state == state) if (state) else (True))
+            ((Activity._state == state) if (state != None) else (True))
         ).all()
 
         return (jsonify([
