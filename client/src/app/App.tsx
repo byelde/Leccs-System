@@ -1,10 +1,13 @@
 import { Routes } from "./routes"
 import "./App.css"
+import { LoggedUserProvider } from "./shared/contexts"
 
 function App() {
 
   return (
-    <Routes/>
+    <LoggedUserProvider>
+      <Routes/>
+    </LoggedUserProvider>
   )
 }
 
