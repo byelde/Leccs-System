@@ -1,10 +1,8 @@
 from datetime import datetime as dtt
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, Integer, DateTime, Boolean
+from sqlalchemy import Integer
 
 from app.database import db
-from app.models.Events.Activity import Activity
-from app.models.Users.LeecsCoord import CoordLeccs
 
 
 class Requisition(db.Model):
@@ -31,6 +29,7 @@ class Requisition(db.Model):
 
 
     def notifySubscriber(self) -> None:
+        from app.models.Users.LeecsCoord import CoordLeccs
 
         coord_lecc_obj: type[CoordLeccs]
 

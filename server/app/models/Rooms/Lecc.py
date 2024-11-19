@@ -25,13 +25,3 @@ class Lecc(IRoom):
     def addActivity(self, *activity_id) -> None:
         for atv_id in activity_id:
             self._activities_ids.append(atv_id)
-
-
-    @override
-    def suspendOperation(self) -> None:
-        pass
-    
-
-    @override
-    def returnOperation(self) -> None:
-        pass

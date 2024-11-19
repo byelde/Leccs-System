@@ -13,11 +13,3 @@ class IRoom(ABC):
     @abstractmethod
     def addActivity(self) -> None:
         pass
-
-    @abstractmethod
-    def suspendOperation(self) -> None:
-        pass
-    
-    @abstractmethod
-    def returnOperation(self) -> None:
-        pass

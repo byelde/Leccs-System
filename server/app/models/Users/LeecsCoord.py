@@ -1,10 +1,10 @@
 from typing import override
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, Integer, Boolean
+from sqlalchemy import ForeignKey, Boolean
 
 from app.database import db
 from .Teacher import Teacher
-
+from app.models.Events.Activity import Activity
 
 class CoordLeccs(Teacher, db.Model):
     
@@ -20,12 +20,36 @@ class CoordLeccs(Teacher, db.Model):
 
 
     @override
-    def bookLecc(self, activity_id: int) -> int:
-        pass
+    def bookLecc(self, act_obj: type[Activity]) -> None:
+        from app.models.Events.Requisition import Requisition
+
+        act_obj.sendActivity()
+        req_obj: type[Requisition] = Requisition(act_obj.getId())
+        req_obj.sendRequisition()
+        self.acceptRequisition(act_obj.getId())
+
+
+    @override
+    def cancelBook(self, act_obj: type[Activity]) -> None:
+        from app.models.Events.Requisition import Requisition
+        if not (act_obj.getState()):
+            req_obj: type[Requisition] = Requisition.query.filter_by(_activity_id = act_obj.getId()).first()
+            db.session.delete(req_obj)
+        db.session.delete(act_obj)
+        db.session.commit()
 
         
     def acceptRequisition(self, activity_id: int):
-        pass
+
+        from app.models.Events.Activity import Activity
+        from app.models.Events.Requisition import Requisition
+
+        act_obj:type[Activity] = Activity.query.filter_by(_id=activity_id).first()
+        req_obj:type[Requisition] = Requisition.query.filter_by(_activity_id = activity_id).first()
+
+        act_obj.updateState(True)
+        db.session.delete(req_obj)
+        db.session.commit()
 
 
     def newRequisition(self, state):

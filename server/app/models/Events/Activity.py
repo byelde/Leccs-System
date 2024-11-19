@@ -42,6 +42,10 @@ class Activity(db.Model):
 
     def getId(self) -> int:
         return self._id
+    
+
+    def getState(self) -> bool:
+        return self._state
 
 
     def sendActivity(self) -> None:
@@ -89,6 +93,10 @@ class Activity(db.Model):
 
     def __updateDescription(self, new_description:str) -> None:
         self._description = new_description
+    
+
+    def updateState(self, new_state:str) -> None:
+        self._state = new_state
 
 
     def to_json(self) -> dict:

@@ -4,6 +4,8 @@ from sqlalchemy import String as String
 
 from app.database import db
 from .IUser import User
+from app.models.Events.Activity import Activity
+from app.models.Events.Requisition import Requisition
 
 class Student(User, db.Model):
     
@@ -23,13 +25,20 @@ class Student(User, db.Model):
 
 
     @override
-    def bookLecc(self, activity_id: int) -> int:
-        pass
+    def bookLecc(self, act_obj: type[Activity]) -> int:
+        act_obj.sendActivity()
+        req_obj: type[Requisition] = Requisition(act_obj.getId())
+        req_obj.sendRequisition()
 
 
     @override
-    def cancelBook(self, activity: int) -> None:
-        pass
+    def cancelBook(self, activity: type[Activity]) -> None:
+        if not (activity.getState()):
+            req_obj: type[Requisition] = Requisition.query.filter_by(_activity_id = activity.getId()).first()
+            db.session.delete(req_obj)
+        db.session.delete(activity)
+        db.session.commit()
+
 
 
     @override
