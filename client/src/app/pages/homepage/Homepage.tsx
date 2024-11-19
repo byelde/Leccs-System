@@ -11,7 +11,7 @@ export const Homepage = () => {
 
   useEffect(()=>{
     if(!loggedUserContext.id) navigate("/login")
-})
+  })
 
   const navigate = useNavigate();
 
@@ -28,10 +28,6 @@ export const Homepage = () => {
   const openForm = useCallback(()=>{
     setIsRequestFormOpen(true)
   },[])
-  
-  const sendRequest = useCallback(()=>{
-    window.alert("Request submitted.")
-  },[])
 
   return(
     <Container sx={{ display:"flex", flexDirection:"column", justifyItems:"left", padding:10}}>
@@ -40,7 +36,7 @@ export const Homepage = () => {
       <Box sx={{display:"flex", flexDirection:"column", justifyContent:"right", gap:4}}>
       <Button variant="contained" sx={{alignSelf:"end"}} onClick={openForm}>Book</Button>
         <DisplayCard/>
-        <RequisitionForm isOpen={isRequestFormOpen} setIsOpen={setIsRequestFormOpen} action={sendRequest}/>
+        <RequisitionForm isOpen={isRequestFormOpen} setIsOpen={setIsRequestFormOpen}/>
       </Box>
     </Container>
   )

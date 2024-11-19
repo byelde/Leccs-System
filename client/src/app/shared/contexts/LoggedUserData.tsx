@@ -44,23 +44,23 @@ export const LoggedUserProvider: React.FC<LoggedUserProviderProps> = ({children}
 
       if( (response).status === 200 ){
         const data = await response.json()
-        console.log(data)
-        handleLoginUser(data.name, data.id, data.email, data.type)
+        return handleLoginUser(data.name, data.id, data.email, data.type)
       } else {
-        alert("Wrong login data.")
+        return alert("Wrong login data.")
       }
     } catch (error) {
-      alert(error)
+      return alert(error)
     }
-
+    
   }
-
-
+  
+  
   const handleLoginUser = useCallback((name: string, id: string, email: string, type: string)=>{
     setName(name)
     setId(id)
     setEmail(email)
     setType(type)
+    console.log(name)
   },[])
 
 

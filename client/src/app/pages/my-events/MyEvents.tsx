@@ -1,35 +1,75 @@
 import { Avatar, Box, Button, Container, Drawer, Grid2 as Grid, IconButton, List, ListItem, ListItemText, Paper, TextField, Typography} from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
+// import DeleteIcon from '@mui/icons-material/Delete';
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { ActivityPopUp } from "../../shared/components";
 import { LoggedUserDataContext } from "../../shared/contexts";
 import { useNavigate } from "react-router-dom";
+import { IActivities } from "../../shared/models";
 
 
 export const MyEvents = () => {
 
   const dialogRef = useRef<HTMLInputElement>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [currActivityData, setCurrActivityData] = useState<ICurrActivityData>({} as ICurrActivityData)
+  const [currActivityData, setCurrActivityData] = useState<IActivities>({} as IActivities)
+  const [ownActivities, setOwnActivities] = useState<IActivities[]>([])
 
   const loggedUserContext = useContext(LoggedUserDataContext)
 
   const navigate = useNavigate();
 
   useEffect(()=>{
-    if(!loggedUserContext.id) navigate("/login")
+    if(!loggedUserContext.id){
+      return navigate("/login")
+    }
   })
 
-  
-  interface ICurrActivityData {
-    name: string;
-    responsible_id: string;
-    category: string;
-    init_date: string;
-  }
+  useEffect(()=>{
+    fetchActivities()
+  },[])
 
-  const handleModalData = useCallback((name: string, responsible_id: string, category: string, init_date: string)=>{
-    setCurrActivityData({name: name, responsible_id: responsible_id, category: category, init_date: init_date})
+
+  const fetchActivities = async () => {
+    const options = {
+      method:"GET",
+    }
+
+    const response = await fetch(
+      `http://localhost:5000/activity/filtered/2?responsible_id=${loggedUserContext.id}`, 
+      options
+    )
+    const data = await response.json()
+    setOwnActivities(data[0])
+  }  
+
+
+  // const deleteActivity = async (activity_id:number) => {
+  //   try{
+
+  //     console.log(typeof(activity_id))
+
+  //     const options = {
+  //         method: "DELETE"
+  //     }
+      
+  //     const response = await fetch(`https://localhost:5000/activity?id={activitie_id}`, options)
+
+  //     if (response.status === 200){
+  //         window.location.reload()
+  //     } else {
+  //         console.error("Failed to delete.")
+  //     }
+
+
+  // } catch (error) {
+  //     alert(error)
+
+  // }
+  // }
+
+
+  const handleModalData = useCallback((name: string, responsible_id: string, category: string, init_date: string, lecc_id: number, description:string)=>{
+    setCurrActivityData({responsible_id: responsible_id, category: category, init_date: init_date, lecc_id: lecc_id, description:description})
     setIsDialogOpen(true);
   },[])
   
@@ -38,10 +78,12 @@ export const MyEvents = () => {
 
       <ActivityPopUp
         ref={dialogRef}
-        name={currActivityData.name}
-        responsible_id={currActivityData.responsible_id}
-        category={currActivityData.category}
-        init_date={currActivityData.init_date}
+        name={"Event"}
+        // responsible_id={currActivityData.responsible_id ? currActivityData.responsible_id : ""}
+        category={currActivityData.category ? currActivityData.category : ""}
+        init_date={currActivityData.init_date ? currActivityData.init_date : ""}
+        description={currActivityData.description ? currActivityData.description : ""}
+        lecc_id={currActivityData.lecc_id ? currActivityData.lecc_id : 0}
         isOpen={isDialogOpen}
         setIsOpen={setIsDialogOpen}
       />
@@ -71,7 +113,7 @@ export const MyEvents = () => {
       <Paper sx={{marginTop:20, minWidth:1000, marginLeft:"25%"}}>
         <Box sx={{display:"flex", flexDirection:"column", gap:4, backgroundColor:"#e5e5e5", padding:4}}>
           
-          <Grid container>
+          {/* <Grid container>
             <Grid size={4}>
               <TextField label="Name" sx={{width:"100%"}}></TextField>
             </Grid>
@@ -82,31 +124,32 @@ export const MyEvents = () => {
                 <Button variant="text">Time</Button>
               </Box>
             </Grid>
-          </Grid>
+          </Grid> */}
 
           <Box sx={{border:2, borderColor:"black", display:"flex", alignItems:"center"}}>
             <List sx={{display:"grid", flexDirection:"column", maxHeight:500, width:"100%", border:1, borderColor:"gray", overflow:"scroll"}}>
-              {[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15].map((arg)=>{
+              {ownActivities.map((item)=>{
                 return(
                   <ListItem
-                    secondaryAction={
-                      <IconButton>
-                        <DeleteIcon/>
-                      </IconButton>
-                    }
+                    // secondaryAction={
+                    //   <IconButton>
+                    //     <DeleteIcon onClick={()=>{deleteActivity(item.id ? item.id : 0)}}/>
+                    //   </IconButton>
+                    // }
                   >
                     <ListItemText
-                      primary={`item ${arg}`}
+                      primary={`${item.category}`}
                       onClick={()=>{handleModalData(
-                        String(arg),
-                        String(arg),
-                        String(arg),
-                        String(arg)
+                        "Event",
+                        item.responsible_id ? item.responsible_id : "",
+                        item.category ? item.category : "",
+                        item.init_date ? item.init_date : "",
+                        item.lecc_id ? item.lecc_id: 0,
+                        item.description ? item.description : "No description"
                       )}}
                     />
                     <Box sx={{display:"flex", gap:2}}>
-                      <Typography>yy/mm/ss</Typography>
-                      <Typography>00:00-00:00</Typography>
+                      <Typography>{item.init_date?.slice()}</Typography>
                     </Box>
                   </ListItem>
                 )

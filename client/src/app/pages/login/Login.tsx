@@ -1,5 +1,5 @@
 import { AppBar, Box, Button, Checkbox, Container, FormControlLabel, IconButton, InputAdornment, Paper, TextField, Toolbar, Typography } from "@mui/material"
-import { useCallback, useContext, useMemo, useState } from "react"
+import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -8,31 +8,31 @@ import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
 
-  const loggedUserContext = useContext(LoggedUserDataContext)
-  
   const [id, setId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [passwordVisibility, setPasswordVisibility] = useState<boolean>(false);
+  const loggedUserContext = useContext(LoggedUserDataContext)
+  
+  useEffect(()=>{
+    if(loggedUserContext.id)navigate("/")
+  })
 
   const navigate = useNavigate();
-
+  
   const handleChangePasswordType = useCallback(()=>{
     setPasswordVisibility(!passwordVisibility)
   },[passwordVisibility])
-
-
+  
+  
   const typePasswordLabel: string = useMemo(()=>{
     if (passwordVisibility){return "text"} else {return "password"}
   },[passwordVisibility])
-
+  
+  
   const handleExecuteLogin = useCallback((id:string, pwd: string)=>{
     loggedUserContext.signin(id, pwd)
-    if (loggedUserContext.id){
-      console.log("GOOOO")
-      navigate("/")
-    };
   },[])
-
+  
 
   return(
     <Container maxWidth={false} sx={{display:"flex", justifyContent:"center", alignItems:"center", flexDirection:"column", maxWidth:"100%"}}>

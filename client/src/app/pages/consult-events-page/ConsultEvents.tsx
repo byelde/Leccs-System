@@ -6,46 +6,71 @@ import {DatePicker} from "@mui/x-date-pickers/DatePicker"
 import 'dayjs/locale/en-gb';
 import dayjs, { Dayjs } from 'dayjs';
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { ActivityPopUp } from "../../shared/components";
 
+import { IActivities } from "../../shared/models";
 
 
 export const ConsultEventsPage = () => {
-
-  interface ICurrActivityData {
-    name: string;
-    responsible_id: string;
-    category: string;
-    init_date: string;
-  }
-
-  const [date, setDate] = useState<Dayjs>(dayjs())
-  const [lecc, setLecc] = useState<string>("Lecc 1")
-  const [currActivityData, setCurrActivityData] = useState<ICurrActivityData>({} as ICurrActivityData)
-  const dialogRef = useRef<HTMLInputElement>(null)
+  
+  
+  
+  // const dialogRef = useRef<HTMLInputElement>(null)
   const returnWeekButton = useRef<HTMLButtonElement>(null)
   const forwardWeekButton = useRef<HTMLButtonElement>(null)
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
   
+  const [date, setDate] = useState<Dayjs>(dayjs())
+  const [lecc, setLecc] = useState<string>("Lecc 1")
+  const [currActivityData, setCurrActivityData] = useState<(IActivities)>({} as IActivities)
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
+
+
+  const [activityData, setActivityData] = useState<IActivities[]>([])
+
+
+  useEffect(()=>{
+    handleFetchActivities();
+  },[date, lecc])
+
+
   const DEFAULT_DATE:Dayjs = useMemo(()=>{
     return dayjs()
   },[])
+
 
   const handleReturnWeek = useCallback(()=>{
     if (date.subtract(1,"week").isAfter(DEFAULT_DATE)) setDate(date.subtract(1,"week"));
   },[date, DEFAULT_DATE])
   
+
   const handleForwardWeek = useCallback(()=>{
     if (date.add(1,"week").isBefore(DEFAULT_DATE.add(6,"month"))) setDate(date.add(1,"week"));
   },[date, DEFAULT_DATE])
 
-  const handleModalData = useCallback((name: string, responsible_id: string, category: string, init_date: string)=>{
-    setCurrActivityData({name: name, responsible_id: responsible_id, category: category, init_date: init_date})
+  
+  const handleModalData = useCallback((responsible_id: string, category: string, init_date: string, description:string)=>{
+    setCurrActivityData({responsible_id: responsible_id, category: category, init_date: init_date, description:description})
     setIsDialogOpen(true);
+  },[])
+
+
+  const handleFetchActivities = useCallback(async () => {
+    try{
+
+      const response = await fetch(`
+        https://localhost:5000/activity/filtered/?min_date=${date.format("YYYYMMDD")}&lecc_id=${lecc}&max_date=${date.add(7,"days").format("YYYYMMDD")}`
+      )
+      const data = await response.json()
+      console.log(data[0])
+      setActivityData(data[0])
+
+    } catch (error) {
+      alert(error)
+    }
   },[])
 
 
@@ -53,11 +78,12 @@ export const ConsultEventsPage = () => {
     <Paper sx={{marginTop:10, minWidth:600, maxWidth:"100%"}}>
 
       <ActivityPopUp
-        ref={dialogRef}
-        name={currActivityData.name}
-        responsible_id={currActivityData.responsible_id}
-        category={currActivityData.category}
-        init_date={currActivityData.init_date}
+        name={"Event"}
+        category={currActivityData.category ? currActivityData.category : ""}
+        responsible_id={currActivityData.responsible_id ? currActivityData.responsible_id : ""}
+        init_date={currActivityData.init_date ? currActivityData.init_date : ""}
+        description={currActivityData.description ? currActivityData.description : ""}
+        lecc_id={currActivityData.lecc_id ? currActivityData.lecc_id : 0}
         isOpen={isDialogOpen}
         setIsOpen={setIsDialogOpen}
       />
@@ -124,20 +150,23 @@ export const ConsultEventsPage = () => {
                 <Grid size={1.71}>
                   <Typography>{`${date.add(index,"day").date()}/${date.add(index,"day").month()+1}`}</Typography>
                   <List>
-                    {Array(12).fill(0).map((value,i)=>{
-                      return(
-                        <ListItem 
-                          onClick={
-                            ()=>{handleModalData(
-                                  String(i),
-                                  String(i),
-                                  String(i),
-                                  `${date.add(index,"day").date()}/${date.add(index,"day").month()+1}`)}
-                          }
-                        >
-                          <ListItemText>{i}</ListItemText>
-                        </ListItem>
-                      )
+                    {activityData.map((item)=>{
+                      if(dayjs(item.init_date) == date.add(index,"day")){
+                        return(
+                          <ListItem 
+                            onClick={
+                              ()=>{handleModalData(
+                                    String(item.responsible_id),
+                                    String(item.category),
+                                    String(item.init_date),
+                                    String(item.description),
+                                    // `${date.add(index,"day").date()}/${date.add(index,"day").month()+1}`)}
+                          )}}
+                          >
+                            <ListItemText>{item.category}</ListItemText>
+                          </ListItem>
+                        )
+                      }
                     })}
                   </List>
                 </Grid>
