@@ -29,3 +29,7 @@ class User():
     @abstractmethod
     def validatePwd(self, pwd:str) -> bool:
         pass
+
+    @abstractmethod
+    def to_json() -> str:
+        pass
