@@ -63,7 +63,7 @@ class CoordLeccs(Teacher, db.Model):
             self.commit()
 
 
-    def newRequisition(self, state):
+    def newRequisition(self):
         if not self._pending_requisitions:
             self._pending_requisitions = True
         db.session.commit()
