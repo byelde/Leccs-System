@@ -1,15 +1,14 @@
 import React, { createContext, useCallback, useState } from "react"
 
 
-// This context is not used yet
-
-
 interface ILoggedUserData {
   name:   string|null
   id:     string|null
   email:  string|null
+  usrClass:  string|null
+  reqs?:  boolean
 
-  login: (name:string, id:string, email:string, type:string) => void
+  login: (name:string, id:string, email:string, usrClass:string, reqs:boolean) => void
   logout: () => void
   auth: () => void
   signin: (id:string, password:string)=> void
@@ -30,7 +29,8 @@ export const LoggedUserProvider: React.FC<LoggedUserProviderProps> = ({children}
   const [name, setName] = useState<string|null>(null)
   const [id, setId] = useState<string|null>(null)
   const [email, setEmail] = useState<string|null>(null)
-  const [type, setType] = useState<string|null>(null)
+  const [usrClass, setUsrClass] = useState<string|null>(null)
+  const [req, setReq] = useState<boolean|null>(null)
 
   
   const handleSignIn = async (id:string, password: string) => {
@@ -44,7 +44,7 @@ export const LoggedUserProvider: React.FC<LoggedUserProviderProps> = ({children}
 
       if( (response).status === 200 ){
         const data = await response.json()
-        return handleLoginUser(data.name, data.id, data.email, data.type)
+        return handleLoginUser(data.name, data.id, data.email, data.class, data.pending_req)
       } else {
         return alert("Wrong login data.")
       }
@@ -55,12 +55,12 @@ export const LoggedUserProvider: React.FC<LoggedUserProviderProps> = ({children}
   }
   
   
-  const handleLoginUser = useCallback((name: string, id: string, email: string, type: string)=>{
+  const handleLoginUser = useCallback((name: string, id: string, email: string, usrClass: string, req:boolean)=>{
     setName(name)
     setId(id)
     setEmail(email)
-    setType(type)
-    console.log(name)
+    setUsrClass(usrClass)
+    setReq(req)
   },[])
 
 
@@ -68,21 +68,22 @@ export const LoggedUserProvider: React.FC<LoggedUserProviderProps> = ({children}
     setName(null)
     setId(null)
     setEmail(null)
-    setType(null)
+    setUsrClass(null)
+    setReq(null)
   },[])
 
 
   const handleUserIsAuthenticated = useCallback(()=>{
-    if(name && id && email && type){
+    if(name && id && email && usrClass){
       return true
     }
     return false
-  },[name, id, email, type])
+  },[name, id, email, usrClass])
 
 
   return(
     <LoggedUserDataContext.Provider 
-      value={{name:name, id:id, email:email, 
+      value={{name:name, id:id, email:email, usrClass: usrClass, reqs:req,
               login: handleLoginUser, 
               logout: handleLogoutUser,
               auth:handleUserIsAuthenticated,

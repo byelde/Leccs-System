@@ -16,6 +16,8 @@ class CoordLeccs(Teacher, db.Model):
     
 
     def __init__(self, teacher: type[Teacher]):
+        self.updateReqState()
+        print("INIT COOR\n\n\n")
         super().__init__(*list(teacher.to_json().values()))
 
 
@@ -52,6 +54,15 @@ class CoordLeccs(Teacher, db.Model):
         db.session.commit()
 
 
+    def updateReqState(self):
+        from app.models.Events.Requisition import Requisition
+        req_list: type[Requisition] = Requisition.query.all()
+
+        if not (req_list):
+            self._pending_requisitions = False
+            self.commit()
+
+
     def newRequisition(self, state):
         if not self._pending_requisitions:
             self._pending_requisitions = True
@@ -70,5 +81,6 @@ class CoordLeccs(Teacher, db.Model):
             "name":         self._name,
             "email":        self._email,
             "password":     self._password,
-            "pending_req":  self._pending_requisitions
+            "pending_req":  self._pending_requisitions,
+            "class":        "coord"
         }

@@ -3,9 +3,11 @@ import React from "react";
 
 interface IActivityProps {
   name: string;
-  responsible_id: string;
   category: string;
   init_date: string
+  description: string
+  lecc_id: number;
+  responsible_id: string; 
 }
 
 interface IDialogProps {
@@ -20,9 +22,9 @@ export const ActivityPopUp = React.forwardRef<HTMLInputElement, IActivityProps &
       <DialogContent>
         <Box>
           <DialogContentText>
-            <Typography variant="h6">{props.responsible_id}</Typography>
             <Typography variant="h6">{props.category}</Typography>
-            <Typography variant="h6">{props.init_date}</Typography>
+            <Typography variant="h6">{`Lecc: ${props.lecc_id}`}</Typography>
+            <Typography variant="h6">{props.description}</Typography>
           </DialogContentText>
         </Box>
       </DialogContent>

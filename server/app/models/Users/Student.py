@@ -62,5 +62,6 @@ class Student(User, db.Model):
             "id":       self._id,
             "name":     self._name,
             "email":    self._email,
-            "password": self._password
+            "password": self._password,
+            "class":    "teacher"
         }

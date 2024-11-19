@@ -30,18 +30,20 @@ export const RequisitionForm: React.FC<IRequestFormProps> = (props) => {
     if(datetime !== null){
       const options = {
         method: "POST",
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(
           {
             responsible_id: respId,
             category: category,
             init_date: datetime.format("YYYY-MM-DD HH:MM"),
-            end_date: datetime.add(1,"hour").format("YYYY-MM-DD HH:mm") ? datetime !== null : null,
+            end_date: datetime.add(1,"hour").format("YYYY-MM-DD HH:mm"),
             lecc_id: lecc,
             description: description
          }
         )
       }
-      await fetch('https://localhost:5000/activity', options)
+      console.log(options)
+      await fetch('http://localhost:5000/activity', options)
       .then(response => response.json())
       .then(data => console.log(data))
       .catch(error => console.error(error));
@@ -59,8 +61,8 @@ export const RequisitionForm: React.FC<IRequestFormProps> = (props) => {
           <Grid container rowSpacing={1} columnSpacing={1}>
 
             <Grid size={6}>
-              <TextField value={respId} onChange={()=>{setRespIp(respId)}} disabled sx={{width:"100%", minWidth:200}} required label="Responsible" select>
-                <MenuItem>{respId}</MenuItem>
+              <TextField value={respId} onChange={(e)=>{setRespIp(e.target.value)}} disabled sx={{width:"100%", minWidth:200}} required label="Responsible" select>
+                <MenuItem>{}</MenuItem>
               </TextField>
             </Grid>
 

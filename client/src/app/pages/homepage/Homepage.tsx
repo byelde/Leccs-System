@@ -17,6 +17,8 @@ export const Homepage = () => {
 
   const [isRequestFormOpen, setIsRequestFormOpen] = useState<boolean>(false)
 
+  
+
   const handleNavigateToEvents = () => {
     navigate("events");
   }
@@ -38,6 +40,7 @@ export const Homepage = () => {
         <DisplayCard/>
         <RequisitionForm isOpen={isRequestFormOpen} setIsOpen={setIsRequestFormOpen}/>
       </Box>
+      
     </Container>
   )
 

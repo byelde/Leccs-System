@@ -122,6 +122,7 @@ class ActivityController:
             
             try:
                 coord_obj.acceptRequisition(id)
+                coord_id.updateReqState()
 
                 return(jsonify({"message": "requisition accepted."}), 200)
             
@@ -156,7 +157,7 @@ class ActivityController:
         return(jsonify({"message": "activity updated."}), 200)
 
              
-    def delete(self, id):
+    def delete(self, query):
 
         data = request.args
         id = data.get("id")

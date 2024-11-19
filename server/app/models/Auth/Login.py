@@ -7,9 +7,13 @@ class Login():
 
     @classmethod
     def validateAccess(self, id: str, pwd:str) -> User|None: 
+
         user: type[User]
 
-        user = Teacher.query.filter_by(_id=id).first()
+        user = CoordLeccs.query.filter_by(_teacher_id=id).first()
+        
+        if user is None:
+            user = Teacher.query.filter_by(_id=id).first()
 
         if user is None:
             user = Student.query.filter_by(_id=id).first()

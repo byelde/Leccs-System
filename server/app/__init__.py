@@ -24,6 +24,8 @@ def create_app(SQLITE_URI: str, SECRET_KEY: str) -> Flask:
 
     CORS(app)
 
+    app.config['CORS_HEADERS'] = 'Content-Type'
+
     return app
 
 app = create_app(

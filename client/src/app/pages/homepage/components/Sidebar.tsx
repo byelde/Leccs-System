@@ -1,4 +1,7 @@
 import { Box, Button, Drawer, Typography } from "@mui/material";
+import { LoggedUserDataContext } from "../../../shared/contexts";
+import { useCallback, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 interface ISideBarProps {
@@ -7,6 +10,18 @@ interface ISideBarProps {
 }
 
 export const Sidebar:React.FC<ISideBarProps> = (props) => {
+
+  const loggedUserContext = useContext(LoggedUserDataContext)
+
+  const navigate = useNavigate();
+
+  const handleReqButton = useCallback(()=>{
+    console.log(loggedUserContext.reqs)
+    if(loggedUserContext.reqs && loggedUserContext.usrClass == "coord"){
+      return (<Button onClick={()=>{navigate("/pending")}}>Requisitions</Button>)
+    }
+  },[])
+
   return(
     <Drawer variant="permanent" anchor="left">
       <Box sx={{padding:4, height:"100%", display:"flex", flexDirection:"column", gap:2}}>
@@ -23,6 +38,9 @@ export const Sidebar:React.FC<ISideBarProps> = (props) => {
             <Button onClick={props.navigateToMyEvents} variant="contained" color="inherit">
               My events
             </Button>
+            
+            {handleReqButton()}
+            
           </Box>
       </Box>
     </Drawer>
